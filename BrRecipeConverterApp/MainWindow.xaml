@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BrRecipeConverterApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="475" Width="800" ResizeMode="NoResize">
     <StackPanel>
         <StackPanel Orientation="Horizontal" Margin="10">
             <Button x:Name="OpenXml" Click="OpenXml_OnClick">Open Recipe XML</Button>
@@ -14,8 +14,12 @@
         <Border BorderThickness="1" BorderBrush="Black" Margin="10">
             <StackPanel>
                 <Label FontWeight="Bold">Csv Results</Label>
-                <TextBlock x:Name="Results" Padding="5">Open Xml File to See Results</TextBlock>
+                <TextBox x:Name="Results" Padding="5" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" Height="300" IsEnabled="False">Open Xml File to See Results</TextBox>
             </StackPanel>
         </Border>
+
+        <StackPanel Orientation="Horizontal" Margin="10">
+            <Button x:Name="SaveCsv" Click="SaveCsv_OnClick" IsEnabled="False">Save Results</Button>
+        </StackPanel>
     </StackPanel>
 </Window>

@@ -44,6 +44,28 @@ namespace BrRecipeConverterApp
                 var reader = File.OpenText(dlg.FileName);
                 var results = BrRecipeXmlToCsvTool.ConvertXmlToCsv(reader.ReadToEnd());
                 Results.Text = results;
+                Results.IsEnabled = true;
+
+                SaveCsv.IsEnabled = true;
+            };
+
+            dlg.ShowDialog();
+        }
+
+        private void SaveCsv_OnClick(object sender, RoutedEventArgs e)
+        {
+            var dlg = new SaveFileDialog
+            {
+                Title = "Save Converted B&R Recipe CSV File",
+                DefaultExt = ".csv",
+                Filter = "Csv documents (.csv)|*.csv"
+            };
+
+            dlg.FileOk += (o, args) =>
+            {
+                File.WriteAllText(dlg.FileName, Results.Text);
+
+                MessageBox.Show("Saved!");
             };
 
             dlg.ShowDialog();
