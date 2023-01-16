@@ -1,0 +1,3 @@
+= B&R Recipe XML File Conversion Tool
+
+This project is a utility for converting the output files from MappRecipeXML to the CSV format. 
