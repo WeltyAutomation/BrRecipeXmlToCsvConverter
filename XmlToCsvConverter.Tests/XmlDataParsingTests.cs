@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using FluentAssertions;
@@ -12,8 +14,27 @@ namespace XmlToCsvConverter.Tests
         [Fact]
         public void WeCanParseSinglePropertyFromRecipeXmlData()
         {
-            var data = GetSingleProperty();
+            var xmlData = GetSingleProperty();
 
+            var csvResults = ParseRecipleXmlDataToCsv(xmlData);
+
+            csvResults.Should().Be("gDuctLineConfig,gDuctLineConfig.CircuitDiagram,STRING,CD-XXXX-XX");
+        }
+
+        [Fact]
+        public void WeCanParseMultipleProeprtiesFromRecipeXmlData()
+        {
+            var xmlData = GetMultipleProperties();
+
+            var csvResults = ParseRecipleXmlDataToCsv(xmlData);
+
+            csvResults.Should().Be("gDuctLineConfig,gDuctLineConfig.CircuitDiagram,STRING,CD-XXXX-XX\r\ngDuctLineConfig,gDuctLineConfig.Decoiler.AutoReverseProhibited,BOOL,false");
+        }
+
+        private static string ParseRecipleXmlDataToCsv(string data)
+        {
+            var elementName = string.Empty;
+            var groupNames = new List<String>();
             var strBuilder = new StringBuilder();
 
             using (XmlReader reader = XmlReader.Create(new StringReader(data)))
@@ -25,18 +46,23 @@ namespace XmlToCsvConverter.Tests
                         switch (reader.Name)
                         {
                             case "Element":
-                                var name = reader.GetAttribute("Name");
-                                strBuilder.Append($"{name},");
+                                //This is the top of the tree
+                                elementName = reader.GetAttribute("Name");
+                                groupNames.Clear();
                                 break;
                             case "Group":
-                                var groupId = reader.GetAttribute("ID");
-                                strBuilder.Append($"{groupId}.");
+                                //We need to handle nesting
+                                groupNames.Add(reader.GetAttribute("ID"));
                                 break;
                             case "Property":
+                                //This is the end of the line
                                 var propertyId = reader.GetAttribute("ID");
                                 var dataType = reader.GetAttribute("DataType");
                                 var value = reader.GetAttribute("Value");
-                                strBuilder.AppendLine($"{propertyId},{dataType},{value}");
+
+                                var groupName = string.Join(".", groupNames);
+
+                                strBuilder.AppendLine($"{elementName},{groupName}.{propertyId},{dataType},{value}");
                                 break;
                             default:
                                 break;
@@ -45,7 +71,7 @@ namespace XmlToCsvConverter.Tests
                 }
             }
 
-            strBuilder.ToString().Should().Be("gDuctLineConfig,gDuctLineConfig.CircuitDiagram,STRING,CD-3542-00\r\n");
+            return strBuilder.ToString().TrimEnd();
         }
 
         string GetSingleProperty()
@@ -54,7 +80,22 @@ namespace XmlToCsvConverter.Tests
 <DATA>
 	<Element Name=""gDuctLineConfig"" Type=""PvParameter"">
 		<Group ID=""gDuctLineConfig"">
-			<Property ID=""CircuitDiagram"" DataType=""STRING"" Value=""CD-3542-00"" />
+			<Property ID=""CircuitDiagram"" DataType=""STRING"" Value=""CD-XXXX-XX"" />
+		</Group>
+	</Element>
+</DATA>";
+        }
+
+        string GetMultipleProperties()
+        {
+            return @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<DATA>
+	<Element Name=""gDuctLineConfig"" Type=""PvParameter"">
+		<Group ID=""gDuctLineConfig"">
+			<Property ID=""CircuitDiagram"" DataType=""STRING"" Value=""CD-XXXX-XX"" />
+			<Group ID=""Decoiler"">
+				<Property ID=""AutoReverseProhibited"" DataType=""BOOL"" Value=""false"" />
+			</Group>
 		</Group>
 	</Element>
 </DATA>";
