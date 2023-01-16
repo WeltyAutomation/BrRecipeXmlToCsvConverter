@@ -14,7 +14,12 @@ namespace BrRecipeXmlToCsvConverter.Tests
         [Fact]
         public void WeCanParseSinglePropertyFromRecipeXmlData()
         {
-            var xmlData = GetSingleProperty();
+            var body = @"	<Element Name=""gDuctLineConfig"" Type=""PvParameter"">
+		<Group ID=""gDuctLineConfig"">
+			<Property ID=""CircuitDiagram"" DataType=""STRING"" Value=""CD-XXXX-XX"" />
+		</Group>
+	</Element>";
+            var xmlData = GetBrRecipeXmlHeader() + body + GetBrRecipeXmlFooter();
 
             var csvResults = BrRecipeXmlToCsvTool.ConvertXmlToCsv(xmlData);
 
@@ -24,7 +29,15 @@ namespace BrRecipeXmlToCsvConverter.Tests
         [Fact]
         public void WeCanParseMultiplePropertiesFromRecipeXmlData()
         {
-            var xmlData = GetMultipleProperties();
+            var body = @"	<Element Name=""gDuctLineConfig"" Type=""PvParameter"">
+		<Group ID=""gDuctLineConfig"">
+			<Property ID=""CircuitDiagram"" DataType=""STRING"" Value=""CD-XXXX-XX"" />
+			<Group ID=""Decoiler"">
+				<Property ID=""AutoReverseProhibited"" DataType=""BOOL"" Value=""false"" />
+			</Group>
+		</Group>
+	</Element>";
+            var xmlData = GetBrRecipeXmlHeader() + body + GetBrRecipeXmlFooter();
 
             var csvResults = BrRecipeXmlToCsvTool.ConvertXmlToCsv(xmlData);
 
@@ -34,56 +47,6 @@ gDuctLineConfig,gDuctLineConfig.Decoiler.AutoReverseProhibited,BOOL,false");
 
         [Fact]
         public void WeCanParseMultipleElementsFromRecipeXmlData()
-        {
-            var xmlData = GetMultipleElements();
-            
-            var csvResults = BrRecipeXmlToCsvTool.ConvertXmlToCsv(xmlData);
-
-            csvResults.Should().Be(@"gDuctLineConfig,gDuctLineConfig.AuxDie[0].Enable,BOOL,false
-gDuctLineConfig,gDuctLineConfig.AuxDie[0].Mode,USINT,0
-gDuctLineConfig,gDuctLineConfig.AuxDie[1].Enable,BOOL,false
-gDuctLineConfig,gDuctLineConfig.AuxDie[1].Mode,USINT,0
-gDuctLineConfig,gDuctLineConfig.TemplateConfig,DINT,0
-gMachineSettings,gMachineSettings.Processor.VeeFromLtDepthOffset,REAL,0.5625
-gMachineSettings,gMachineSettings.InlinePlasma.CutoutLimits.MinDistanceFromEdge,REAL,0");
-        }
-
-        string GetBrRecipeXmlHeader()
-        {
-            return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<DATA>\r\n";
-        }
-
-        string GetBrRecipeXmlFooter()
-        {
-            return "\r\n</DATA>";
-        }
-
-        string GetSingleProperty()
-        {
-            var body = @"	<Element Name=""gDuctLineConfig"" Type=""PvParameter"">
-		<Group ID=""gDuctLineConfig"">
-			<Property ID=""CircuitDiagram"" DataType=""STRING"" Value=""CD-XXXX-XX"" />
-		</Group>
-	</Element>";
-
-            return GetBrRecipeXmlHeader() + body + GetBrRecipeXmlFooter();
-        }
-
-        string GetMultipleProperties()
-        {
-            var body = @"	<Element Name=""gDuctLineConfig"" Type=""PvParameter"">
-		<Group ID=""gDuctLineConfig"">
-			<Property ID=""CircuitDiagram"" DataType=""STRING"" Value=""CD-XXXX-XX"" />
-			<Group ID=""Decoiler"">
-				<Property ID=""AutoReverseProhibited"" DataType=""BOOL"" Value=""false"" />
-			</Group>
-		</Group>
-	</Element>";
-
-            return GetBrRecipeXmlHeader() + body + GetBrRecipeXmlFooter();
-        }
-
-        string GetMultipleElements()
         {
             var body = @"	<Element Name=""gDuctLineConfig"" Type=""PvParameter"">
 		<Group ID=""gDuctLineConfig"">
@@ -112,8 +75,27 @@ gMachineSettings,gMachineSettings.InlinePlasma.CutoutLimits.MinDistanceFromEdge,
 			</Group>
 		</Group>
 	</Element>";
+            var xmlData = GetBrRecipeXmlHeader() + body + GetBrRecipeXmlFooter();
+            
+            var csvResults = BrRecipeXmlToCsvTool.ConvertXmlToCsv(xmlData);
 
-            return GetBrRecipeXmlHeader() + body + GetBrRecipeXmlFooter();
+            csvResults.Should().Be(@"gDuctLineConfig,gDuctLineConfig.AuxDie[0].Enable,BOOL,false
+gDuctLineConfig,gDuctLineConfig.AuxDie[0].Mode,USINT,0
+gDuctLineConfig,gDuctLineConfig.AuxDie[1].Enable,BOOL,false
+gDuctLineConfig,gDuctLineConfig.AuxDie[1].Mode,USINT,0
+gDuctLineConfig,gDuctLineConfig.TemplateConfig,DINT,0
+gMachineSettings,gMachineSettings.Processor.VeeFromLtDepthOffset,REAL,0.5625
+gMachineSettings,gMachineSettings.InlinePlasma.CutoutLimits.MinDistanceFromEdge,REAL,0");
+        }
+
+        string GetBrRecipeXmlHeader()
+        {
+            return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<DATA>\r\n";
+        }
+
+        string GetBrRecipeXmlFooter()
+        {
+            return "\r\n</DATA>";
         }
     }
 }
