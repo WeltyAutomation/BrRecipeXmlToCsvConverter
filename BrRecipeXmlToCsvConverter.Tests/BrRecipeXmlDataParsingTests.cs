@@ -48,38 +48,44 @@ gMachineSettings,gMachineSettings.Processor.VeeFromLtDepthOffset,REAL,0.5625
 gMachineSettings,gMachineSettings.InlinePlasma.CutoutLimits.MinDistanceFromEdge,REAL,0");
         }
 
+        string GetBrRecipeXmlHeader()
+        {
+            return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<DATA>\r\n";
+        }
+
+        string GetBrRecipeXmlFooter()
+        {
+            return "\r\n</DATA>";
+        }
+
         string GetSingleProperty()
         {
-            return @"<?xml version=""1.0"" encoding=""UTF-8""?>
-<DATA>
-	<Element Name=""gDuctLineConfig"" Type=""PvParameter"">
+            var body = @"	<Element Name=""gDuctLineConfig"" Type=""PvParameter"">
 		<Group ID=""gDuctLineConfig"">
 			<Property ID=""CircuitDiagram"" DataType=""STRING"" Value=""CD-XXXX-XX"" />
 		</Group>
-	</Element>
-</DATA>";
+	</Element>";
+
+            return GetBrRecipeXmlHeader() + body + GetBrRecipeXmlFooter();
         }
 
         string GetMultipleProperties()
         {
-            return @"<?xml version=""1.0"" encoding=""UTF-8""?>
-<DATA>
-	<Element Name=""gDuctLineConfig"" Type=""PvParameter"">
+            var body = @"	<Element Name=""gDuctLineConfig"" Type=""PvParameter"">
 		<Group ID=""gDuctLineConfig"">
 			<Property ID=""CircuitDiagram"" DataType=""STRING"" Value=""CD-XXXX-XX"" />
 			<Group ID=""Decoiler"">
 				<Property ID=""AutoReverseProhibited"" DataType=""BOOL"" Value=""false"" />
 			</Group>
 		</Group>
-	</Element>
-</DATA>";
+	</Element>";
+
+            return GetBrRecipeXmlHeader() + body + GetBrRecipeXmlFooter();
         }
 
         string GetMultipleElements()
         {
-            return @"<?xml version=""1.0"" encoding=""UTF-8""?>
-<DATA>
-	<Element Name=""gDuctLineConfig"" Type=""PvParameter"">
+            var body = @"	<Element Name=""gDuctLineConfig"" Type=""PvParameter"">
 		<Group ID=""gDuctLineConfig"">
 			<Group ID=""AuxDie"">
 				<Group ID=""[0]"">
@@ -105,8 +111,9 @@ gMachineSettings,gMachineSettings.InlinePlasma.CutoutLimits.MinDistanceFromEdge,
 				</Group>
 			</Group>
 		</Group>
-	</Element>
-</DATA>";
+	</Element>";
+
+            return GetBrRecipeXmlHeader() + body + GetBrRecipeXmlFooter();
         }
     }
 }
