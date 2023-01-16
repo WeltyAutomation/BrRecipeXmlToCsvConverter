@@ -12,7 +12,7 @@ namespace BrRecipeXmlToCsvConverter
         public static string ConvertXmlToCsv(string xmlData)
         {
             var elementName = string.Empty;
-            var groupNames = new Stack<String>();
+            var groupNames = new Stack<string>();
             var strBuilder = new StringBuilder();
 
             using (XmlReader reader = XmlReader.Create(new StringReader(xmlData)))
