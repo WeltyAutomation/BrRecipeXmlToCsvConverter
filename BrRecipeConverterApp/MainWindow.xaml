@@ -5,21 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BrRecipeConverterApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="475" Width="800" ResizeMode="NoResize">
-    <StackPanel>
+        Title="Welty Automation B&amp;R Recipe XML to CSV" 
+        Height="475" Width="800" ResizeMode="NoResize">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
         <StackPanel Orientation="Horizontal" Margin="10">
             <Button x:Name="OpenXml" Click="OpenXml_OnClick">Open Recipe XML</Button>
         </StackPanel>
 
-        <Border BorderThickness="1" BorderBrush="Black" Margin="10">
-            <StackPanel>
+        <Border Grid.Row="1" BorderThickness="1" BorderBrush="Black" Margin="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
                 <Label FontWeight="Bold">Csv Results</Label>
-                <TextBox x:Name="Results" Padding="5" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" Height="300" IsEnabled="False">Open Xml File to See Results</TextBox>
-            </StackPanel>
+                <TextBox Grid.Row="1" x:Name="Results" Padding="5" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" IsEnabled="False">Open Xml File to See Results</TextBox>
+            </Grid>
         </Border>
 
-        <StackPanel Orientation="Horizontal" Margin="10">
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="10">
             <Button x:Name="SaveCsv" Click="SaveCsv_OnClick" IsEnabled="False">Save Results</Button>
         </StackPanel>
-    </StackPanel>
+
+    </Grid>
 </Window>
