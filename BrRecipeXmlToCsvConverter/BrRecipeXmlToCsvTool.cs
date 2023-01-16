@@ -15,6 +15,9 @@ namespace BrRecipeXmlToCsvConverter
             var groupNames = new Stack<string>();
             var strBuilder = new StringBuilder();
 
+            //Add CSV Header line
+            strBuilder.AppendLine("Parameter,Field,DataType,Value");
+
             using (XmlReader reader = XmlReader.Create(new StringReader(xmlData)))
             {
                 while (reader.Read())
@@ -26,6 +29,8 @@ namespace BrRecipeXmlToCsvConverter
                             case "Element":
                                 //This is the top of the tree
                                 elementName = reader.GetAttribute("Name");
+                                var type = reader.GetAttribute("Type");
+                                strBuilder.AppendLine($"{elementName},$Type,STRING,{type}");
 
                                 //Reset state
                                 groupNames.Clear();

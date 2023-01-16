@@ -23,7 +23,9 @@ namespace BrRecipeXmlToCsvConverter.Tests
 
             var csvResults = BrRecipeXmlToCsvTool.ConvertXmlToCsv(xmlData);
 
-            csvResults.Should().Be("gDuctLineConfig,gDuctLineConfig.CircuitDiagram,STRING,CD-XXXX-XX");
+            csvResults.Should().Be(@"Parameter,Field,DataType,Value
+gDuctLineConfig,$Type,STRING,PvParameter
+gDuctLineConfig,gDuctLineConfig.CircuitDiagram,STRING,CD-XXXX-XX");
         }
 
         [Fact]
@@ -41,7 +43,9 @@ namespace BrRecipeXmlToCsvConverter.Tests
 
             var csvResults = BrRecipeXmlToCsvTool.ConvertXmlToCsv(xmlData);
 
-            csvResults.Should().Be(@"gDuctLineConfig,gDuctLineConfig.CircuitDiagram,STRING,CD-XXXX-XX
+            csvResults.Should().Be(@"Parameter,Field,DataType,Value
+gDuctLineConfig,$Type,STRING,PvParameter
+gDuctLineConfig,gDuctLineConfig.CircuitDiagram,STRING,CD-XXXX-XX
 gDuctLineConfig,gDuctLineConfig.Decoiler.AutoReverseProhibited,BOOL,false");
         }
 
@@ -79,11 +83,14 @@ gDuctLineConfig,gDuctLineConfig.Decoiler.AutoReverseProhibited,BOOL,false");
             
             var csvResults = BrRecipeXmlToCsvTool.ConvertXmlToCsv(xmlData);
 
-            csvResults.Should().Be(@"gDuctLineConfig,gDuctLineConfig.AuxDie[0].Enable,BOOL,false
+            csvResults.Should().Be(@"Parameter,Field,DataType,Value
+gDuctLineConfig,$Type,STRING,PvParameter
+gDuctLineConfig,gDuctLineConfig.AuxDie[0].Enable,BOOL,false
 gDuctLineConfig,gDuctLineConfig.AuxDie[0].Mode,USINT,0
 gDuctLineConfig,gDuctLineConfig.AuxDie[1].Enable,BOOL,false
 gDuctLineConfig,gDuctLineConfig.AuxDie[1].Mode,USINT,0
 gDuctLineConfig,gDuctLineConfig.TemplateConfig,DINT,0
+gMachineSettings,$Type,STRING,PvParameter
 gMachineSettings,gMachineSettings.Processor.VeeFromLtDepthOffset,REAL,0.5625
 gMachineSettings,gMachineSettings.InlinePlasma.CutoutLimits.MinDistanceFromEdge,REAL,0");
         }
