@@ -41,8 +41,7 @@ namespace BrRecipeXmlToCsvConverter
                                 var value = reader.GetAttribute("Value");
 
                                 ManageNestedDepth(reader.Depth, groupNames);
-                                var groupNamePath = string.Join(".", groupNames.Reverse())
-                                    .Replace(".[", "[");
+                                var groupNamePath = BuildGroupNamePathToParameter(groupNames);
 
                                 strBuilder.AppendLine($"{elementName},{groupNamePath}.{propertyId},{dataType},{value}");
                                 break;
@@ -52,6 +51,12 @@ namespace BrRecipeXmlToCsvConverter
             }
 
             return strBuilder.ToString().TrimEnd();
+        }
+
+        private static string BuildGroupNamePathToParameter(Stack<string> groupNames)
+        {
+            return string.Join(".", groupNames.Reverse())
+                .Replace(".[", "[");
         }
 
         private static void ManageNestedDepth(int readerDepth, Stack<string> groupNames)
