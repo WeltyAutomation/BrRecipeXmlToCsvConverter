@@ -16,7 +16,7 @@ namespace BrRecipeXmlToCsvConverter.Tests
         {
             var xmlData = GetSingleProperty();
 
-            var csvResults = ParseRecipeXmlDataToCsv(xmlData);
+            var csvResults = BrRecipeXmlToCsvTool.ConvertXmlToCsv(xmlData);
 
             csvResults.Should().Be("gDuctLineConfig,gDuctLineConfig.CircuitDiagram,STRING,CD-XXXX-XX");
         }
@@ -26,7 +26,7 @@ namespace BrRecipeXmlToCsvConverter.Tests
         {
             var xmlData = GetMultipleProperties();
 
-            var csvResults = ParseRecipeXmlDataToCsv(xmlData);
+            var csvResults = BrRecipeXmlToCsvTool.ConvertXmlToCsv(xmlData);
 
             csvResults.Should().Be(@"gDuctLineConfig,gDuctLineConfig.CircuitDiagram,STRING,CD-XXXX-XX
 gDuctLineConfig,gDuctLineConfig.Decoiler.AutoReverseProhibited,BOOL,false");
@@ -37,7 +37,7 @@ gDuctLineConfig,gDuctLineConfig.Decoiler.AutoReverseProhibited,BOOL,false");
         {
             var xmlData = GetMultipleElements();
             
-            var csvResults = ParseRecipeXmlDataToCsv(xmlData);
+            var csvResults = BrRecipeXmlToCsvTool.ConvertXmlToCsv(xmlData);
 
             csvResults.Should().Be(@"gDuctLineConfig,gDuctLineConfig.AuxDie[0].Enable,BOOL,false
 gDuctLineConfig,gDuctLineConfig.AuxDie[0].Mode,USINT,0
@@ -46,61 +46,6 @@ gDuctLineConfig,gDuctLineConfig.AuxDie[1].Mode,USINT,0
 gDuctLineConfig,gDuctLineConfig.TemplateConfig,DINT,0
 gMachineSettings,gMachineSettings.Processor.VeeFromLtDepthOffset,REAL,0.5625
 gMachineSettings,gMachineSettings.InlinePlasma.CutoutLimits.MinDistanceFromEdge,REAL,0");
-        }
-
-        private static string ParseRecipeXmlDataToCsv(string data)
-        {
-            var elementName = string.Empty;
-            var groupNames = new Stack<String>();
-            var strBuilder = new StringBuilder();
-
-            using (XmlReader reader = XmlReader.Create(new StringReader(data)))
-            {
-                while (reader.Read())
-                {
-                    if (reader.NodeType == XmlNodeType.Element)
-                    {
-                        switch (reader.Name)
-                        {
-                            case "Element":
-                                //This is the top of the tree
-                                elementName = reader.GetAttribute("Name");
-
-                                //Reset state
-                                groupNames.Clear();
-                                break;
-                            case "Group":
-                                //We need to handle nesting
-                                if (reader.Depth < groupNames.Count + 2)
-                                {
-                                    //We are finding a new group and need to pop off the last entry which had parameters found already
-                                    groupNames.Pop();
-                                }
-                                groupNames.Push(reader.GetAttribute("ID"));
-                                break;
-                            case "Property":
-                                //This is the end of the line
-                                var propertyId = reader.GetAttribute("ID");
-                                var dataType = reader.GetAttribute("DataType");
-                                var value = reader.GetAttribute("Value");
-
-                                //Check property depth and pop off any extra group names in the stack
-                                while (reader.Depth -2 < groupNames.Count)
-                                {
-                                    //We are finding a new group and need to pop off the last entry which had parameters found already
-                                    groupNames.Pop();
-                                }
-                                var groupNamePath = string.Join(".", groupNames.Reverse())
-                                    .Replace(".[","[");
-
-                                strBuilder.AppendLine($"{elementName},{groupNamePath}.{propertyId},{dataType},{value}");
-                                break;
-                        }
-                    }
-                }
-            }
-
-            return strBuilder.ToString().TrimEnd();
         }
 
         string GetSingleProperty()
