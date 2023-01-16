@@ -7,9 +7,9 @@ using System.Xml;
 using FluentAssertions;
 using Xunit;
 
-namespace XmlToCsvConverter.Tests
+namespace BrRecipeXmlToCsvConverter.Tests
 {
-    public class XmlDataParsingTests
+    public class BrRecipeXmlDataParsingTests
     {
         [Fact]
         public void WeCanParseSinglePropertyFromRecipeXmlData()
