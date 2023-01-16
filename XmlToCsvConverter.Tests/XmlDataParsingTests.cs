@@ -20,40 +20,27 @@ namespace XmlToCsvConverter.Tests
             {
                 while (reader.Read())
                 {
-                    switch (reader.NodeType)
+                    if (reader.NodeType == XmlNodeType.Element)
                     {
-                        case XmlNodeType.Element:
-                            switch (reader.Name)
-                            {
-                                case "Element":
-                                    var name = reader.GetAttribute("Name");
-                                    strBuilder.Append($"{name},");
-                                    break;
-                                case "Group":
-                                    var groupId = reader.GetAttribute("ID");
-                                    strBuilder.Append($"{groupId}.");
-                                    break;
-                                case "Property":
-                                    var propertyId = reader.GetAttribute("ID");
-                                    var dataType = reader.GetAttribute("DataType");
-                                    var value = reader.GetAttribute("Value");
-                                    strBuilder.AppendLine($"{propertyId},{dataType},{value}");
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        case XmlNodeType.Text:
-                            //strBuilder.AppendFormat("Text Node: {0}\n",
-                            //    reader.GetValueAsync().Result);
-                            break;
-                        case XmlNodeType.EndElement:
-                            //strBuilder.AppendFormat("End Element {0}\n", reader.Name);
-                            break;
-                        default:
-                            //strBuilder.AppendFormat("Other node {0} with value {1}\n",
-                            //    reader.NodeType, reader.Value);
-                            break;
+                        switch (reader.Name)
+                        {
+                            case "Element":
+                                var name = reader.GetAttribute("Name");
+                                strBuilder.Append($"{name},");
+                                break;
+                            case "Group":
+                                var groupId = reader.GetAttribute("ID");
+                                strBuilder.Append($"{groupId}.");
+                                break;
+                            case "Property":
+                                var propertyId = reader.GetAttribute("ID");
+                                var dataType = reader.GetAttribute("DataType");
+                                var value = reader.GetAttribute("Value");
+                                strBuilder.AppendLine($"{propertyId},{dataType},{value}");
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }
