@@ -31,12 +31,7 @@ namespace BrRecipeXmlToCsvConverter
                                 groupNames.Clear();
                                 break;
                             case "Group":
-                                //We need to handle nesting
-                                if (reader.Depth < groupNames.Count + 2)
-                                {
-                                    //We are finding a new group and need to pop off the last entry which had parameters found already
-                                    groupNames.Pop();
-                                }
+                                ManageNestedDepth(reader.Depth, groupNames);
                                 groupNames.Push(reader.GetAttribute("ID"));
                                 break;
                             case "Property":
@@ -45,12 +40,7 @@ namespace BrRecipeXmlToCsvConverter
                                 var dataType = reader.GetAttribute("DataType");
                                 var value = reader.GetAttribute("Value");
 
-                                //Check property depth and pop off any extra group names in the stack
-                                while (reader.Depth - 2 < groupNames.Count)
-                                {
-                                    //We are finding a new group and need to pop off the last entry which had parameters found already
-                                    groupNames.Pop();
-                                }
+                                ManageNestedDepth(reader.Depth, groupNames);
                                 var groupNamePath = string.Join(".", groupNames.Reverse())
                                     .Replace(".[", "[");
 
@@ -62,6 +52,15 @@ namespace BrRecipeXmlToCsvConverter
             }
 
             return strBuilder.ToString().TrimEnd();
+        }
+
+        private static void ManageNestedDepth(int readerDepth, Stack<string> groupNames)
+        {
+            while (readerDepth - 2 < groupNames.Count)
+            {
+                //We are finding a new group and need to pop off the last entry which had parameters found already
+                groupNames.Pop();
+            }
         }
     }
 }
