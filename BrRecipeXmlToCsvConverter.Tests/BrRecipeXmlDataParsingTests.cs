@@ -95,6 +95,49 @@ gMachineSettings,gMachineSettings.Processor.VeeFromLtDepthOffset,REAL,0.5625
 gMachineSettings,gMachineSettings.InlinePlasma.CutoutLimits.MinDistanceFromEdge,REAL,0");
         }
 
+        [Fact]
+        public void WeCanParseArrayDataFromRecipeXmlData()
+        {
+            var body = @"	<Element Name=""mchProcNchDpthSettings"" Type=""PvParameter"">
+		<Group ID=""mchProcNchDpthSettings"">
+			<Group ID=""MeasuredCoilWidths"">
+				<Property ID=""[0]"" DataType=""REAL"" Value=""0"" />
+				<Property ID=""[1]"" DataType=""REAL"" Value=""60.18"" />
+				<Property ID=""[2]"" DataType=""REAL"" Value=""60.125"" />
+				<Property ID=""[3]"" DataType=""REAL"" Value=""60.1875"" />
+				<Property ID=""[4]"" DataType=""REAL"" Value=""60.1875"" />
+				<Property ID=""[5]"" DataType=""REAL"" Value=""60.1875"" />
+				<Property ID=""[6]"" DataType=""REAL"" Value=""60.125"" />
+				<Property ID=""[7]"" DataType=""REAL"" Value=""0"" />
+				<Property ID=""[8]"" DataType=""REAL"" Value=""0"" />
+				<Property ID=""[9]"" DataType=""REAL"" Value=""0"" />
+				<Property ID=""[10]"" DataType=""REAL"" Value=""0"" />
+				<Property ID=""[11]"" DataType=""REAL"" Value=""0"" />
+				<Property ID=""[12]"" DataType=""REAL"" Value=""0"" />
+			</Group>
+		</Group>
+	</Element>";
+            var xmlData = GetBrRecipeXmlHeader() + body + GetBrRecipeXmlFooter();
+
+            var csvResults = BrRecipeXmlToCsvTool.ConvertXmlToCsv(xmlData);
+
+            csvResults.Should().Be(@"Parameter,Field,DataType,Value
+mchProcNchDpthSettings,$Type,STRING,PvParameter
+mchProcNchDpthSettings,mchProcNchDpthSettings.MeasuredCoilWidths[0],REAL,0
+mchProcNchDpthSettings,mchProcNchDpthSettings.MeasuredCoilWidths[1],REAL,60.18
+mchProcNchDpthSettings,mchProcNchDpthSettings.MeasuredCoilWidths[2],REAL,60.125
+mchProcNchDpthSettings,mchProcNchDpthSettings.MeasuredCoilWidths[3],REAL,60.1875
+mchProcNchDpthSettings,mchProcNchDpthSettings.MeasuredCoilWidths[4],REAL,60.1875
+mchProcNchDpthSettings,mchProcNchDpthSettings.MeasuredCoilWidths[5],REAL,60.1875
+mchProcNchDpthSettings,mchProcNchDpthSettings.MeasuredCoilWidths[6],REAL,60.125
+mchProcNchDpthSettings,mchProcNchDpthSettings.MeasuredCoilWidths[7],REAL,0
+mchProcNchDpthSettings,mchProcNchDpthSettings.MeasuredCoilWidths[8],REAL,0
+mchProcNchDpthSettings,mchProcNchDpthSettings.MeasuredCoilWidths[9],REAL,0
+mchProcNchDpthSettings,mchProcNchDpthSettings.MeasuredCoilWidths[10],REAL,0
+mchProcNchDpthSettings,mchProcNchDpthSettings.MeasuredCoilWidths[11],REAL,0
+mchProcNchDpthSettings,mchProcNchDpthSettings.MeasuredCoilWidths[12],REAL,0");
+        }
+
         string GetBrRecipeXmlHeader()
         {
             return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<DATA>\r\n";

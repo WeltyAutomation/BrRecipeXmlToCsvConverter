@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace BrRecipeXmlToCsvConverter
 {
@@ -48,7 +49,17 @@ namespace BrRecipeXmlToCsvConverter
                                 ManageNestedDepth(reader.Depth, groupNames);
                                 var groupNamePath = BuildGroupNamePathToParameter(groupNames);
 
-                                strBuilder.AppendLine($"{elementName},{groupNamePath}.{propertyId},{dataType},{value}");
+                                if (PropertyIsArrayElement(propertyId))
+                                {
+                                    strBuilder.AppendLine(
+                                        $"{elementName},{groupNamePath}{propertyId},{dataType},{value}");
+                                }
+                                else
+                                {
+                                    strBuilder.AppendLine(
+                                        $"{elementName},{groupNamePath}.{propertyId},{dataType},{value}");
+                                }
+
                                 break;
                         }
                     }
@@ -56,6 +67,11 @@ namespace BrRecipeXmlToCsvConverter
             }
 
             return strBuilder.ToString().TrimEnd();
+        }
+
+        private static bool PropertyIsArrayElement(string propertyId)
+        {
+            return Regex.IsMatch(propertyId,@"\[\d+\]");
         }
 
         private static string BuildGroupNamePathToParameter(Stack<string> groupNames)
